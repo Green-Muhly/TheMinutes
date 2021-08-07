@@ -27,7 +27,8 @@ Gradle로 Build 했기 때문에 기존 프로젝트에서 `application.yml` 를
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/todolist?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/todolist
+serverTimezone=UTC&characterEncoding=UTF-8
     username: ****
     password: *******
 
@@ -74,3 +75,38 @@ JPA에서의 설정도 맞춰주기 위해 `persisence.xml` 또한 수정했다.
 </persistence>
 ```
 
+
+
+----
+
+### AWS RDS 이용해서 배포하기
+
+`application.yml`
+
+```java
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://todolist.c55jrjs9yxoi.ap-northeast-2.rds.amazonaws.com:3306/todolist?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: qwer1234
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+    database: mysql
+
+logging.level:
+  org.hibernate.SQL: debug
+#  org.hibernate.type: trace
+```
+
+MySQL을 RDS에서 관리하고 EC2에서 구동하는 형식으로 변경.
+
+RDS 인스턴스를 생성하고 엔드포인트를 받아와서 연결.
+
+보안그룹을 따로 설정하여 EC2와 연결.
